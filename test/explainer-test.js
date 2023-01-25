@@ -5,7 +5,7 @@ describe("can explain", () => {
 
   describe("unknown", () => {
     it("reject unknown messages", () => {
-      assert.equal(null, explain("AssertionError: 4 != 8"));
+      assert.equal(null, explain("IndexError: pop from empty list"));
     })
   })
 
@@ -20,6 +20,20 @@ describe("can explain", () => {
       const explanation = explain("NameError: name 'foo' is not defined")
       assert.equal(explanation.kind, "name")
       assert.equal(explanation.missingReference, "foo")
+    })
+  })
+
+  describe("assertionError", () => {
+    it("can explain simple assertion errors", () => {
+      const explanation = explain("AssertionError: 13 != 14")
+      assert.equal(explanation.actual, "13")
+      assert.equal(explanation.expected, "14")
+    })
+
+    it("can explain simple assertion errors, with other values", () => {
+      const explanation = explain("AssertionError: 2 != 1")
+      assert.equal(explanation.actual, "2")
+      assert.equal(explanation.expected, "1")
     })
   })
 
@@ -106,5 +120,12 @@ describe("can translate", () => {
 
     assert.equal(translation.header, "Se está intentando convertir el string `hello` en entero, pero esto no es posible");
     assert.equal(translation.details, `Revisá que estés tratando de convertir el valor correcto`)
+  })
+
+  it("can translate simple assertion errors", () => {
+    const translation = explain("AssertionError: 4 != 8").translate("es");
+
+    assert.equal(translation.header, "Al realizar una comparación, se esperaba obtener el valor `8`, pero se obtuvo el valor `4`");
+    assert.equal(translation.details, `Revisá tus cálculos y algoritmos y asegurate de que devuelvan los valores correctos`)
   })
 })

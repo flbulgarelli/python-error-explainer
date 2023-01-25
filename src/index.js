@@ -26,6 +26,10 @@ const Locales = {
     "intConversion": {
       "header": "Se está intentando convertir el string `{value}` en entero, pero esto no es posible",
       "details": `Revisá que estés tratando de convertir el valor correcto`
+    },
+    "assertionError": {
+      "header": "Al realizar una comparación, se esperaba obtener el valor `{expected}`, pero se obtuvo el valor `{actual}`",
+      "details": `Revisá tus cálculos y algoritmos y asegurate de que devuelvan los valores correctos`
     }
   }
 }
@@ -120,6 +124,21 @@ class IntConversionErrorExplanation extends ErrorExplanation {
 }
 
 
+class AssertionErrorExplanation extends ErrorExplanation {
+  constructor(message) {
+    super(message);
+
+    [this.actual, this.expected] = this._parse(/AssertionError: (.*) != (.*)/);
+  }
+
+  get kind() {
+    return "assertionError"
+  }
+
+  get replacements() {
+    return ['expected', 'actual']
+  }
+}
 
 class UnsupportedTypeErrorExplanation extends ErrorExplanation {
   constructor(message) {
@@ -141,6 +160,8 @@ class UnsupportedTypeErrorExplanation extends ErrorExplanation {
 function explain(message) {
   if (message.indexOf("NameError:") === 0) {
     return new NameErrorExplanation(message);
+  } else if (message.indexOf("AssertionError:") === 0) {
+    return new AssertionErrorExplanation(message);
   } else if (message.indexOf("ValueError: invalid literal") === 0) {
     return new IntConversionErrorExplanation(message);
   } else if (message.indexOf("TypeError: unsupported operand type") === 0) {
