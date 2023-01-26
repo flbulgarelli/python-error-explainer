@@ -63,7 +63,12 @@ class ErrorExplanation {
   }
 
   _parse(regexp) {
-    return regexp.exec(this._message).slice(1)
+    const groups = regexp.exec(this._message);
+    if (groups !== null) {
+      return groups.slice(1);
+    } else {
+      return null;
+    }
   }
 }
 
@@ -89,11 +94,11 @@ class ArgumentsErrorExplanation extends ErrorExplanation {
   constructor(message) {
     super(message);
 
-    const results = this._parse(/TypeError: (.*)\(\) takes (.*) positional arguments but (.*) were given/)
+    const groups = this._parse(/TypeError: (.*)\(\) takes (.*) positional arguments but (.*) were given/)
 
-    this.reference = results[0];
-    this.actualParametersCount = Number(results[1]);
-    this.expectedArgumentsCount = Number(results[2]);
+    this.reference = groups[0];
+    this.actualParametersCount = Number(groups[1]);
+    this.expectedArgumentsCount = Number(groups[2]);
   }
 
   get replacements() {
@@ -128,7 +133,13 @@ class AssertionErrorExplanation extends ErrorExplanation {
   constructor(message) {
     super(message);
 
-    [this.actual, this.expected] = this._parse(/AssertionError: (.*) != (.*)/);
+    const groups = this._parse(/AssertionError: (.*) is not (true|false)/);
+    if (groups) {
+      this.actual = groups[0];
+      this.expected = groups[1] === 'true' ? 'True' : 'False';
+    } else {
+      [this.actual, this.expected] = this._parse(/AssertionError: (.*) != (.*)/);
+    }
   }
 
   get kind() {

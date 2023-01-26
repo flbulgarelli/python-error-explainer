@@ -35,6 +35,24 @@ describe("can explain", () => {
       assert.equal(explanation.actual, "2")
       assert.equal(explanation.expected, "1")
     })
+
+    it("can explain simple assertion errors, with values of different types", () => {
+      const explanation = explain("AssertionError: 'hello' != 1")
+      assert.equal(explanation.actual, "'hello'")
+      assert.equal(explanation.expected, "1")
+    })
+
+    it("can explain simple assertion errors, with assertFalse", () => {
+      const explanation = explain("AssertionError: True is not false")
+      assert.equal(explanation.actual, "True")
+      assert.equal(explanation.expected, "False")
+    })
+
+    it("can explain simple assertion errors, with assertTrue", () => {
+      const explanation = explain("AssertionError: False is not true")
+      assert.equal(explanation.actual, "False")
+      assert.equal(explanation.expected, "True")
+    })
   })
 
   describe("int", () => {
