@@ -23,6 +23,21 @@ describe("can explain", () => {
     })
   })
 
+  describe("booleanTypo", () => {
+    it("can explain false typo", () => {
+      const explanation = explain("NameError: name 'false' is not defined");
+      assert.equal(explanation.kind, "booleanTypo");
+      assert.equal(explanation.rightValue, "False");
+      assert.equal(explanation.wrongValue, "false");
+    })
+    it("can explain true typo", () => {
+      const explanation = explain("NameError: name 'true' is not defined");
+      assert.equal(explanation.kind, "booleanTypo");
+      assert.equal(explanation.rightValue, "True");
+      assert.equal(explanation.wrongValue, "true");
+    })
+  })
+
   describe("assertionError", () => {
     it("can explain simple assertion errors", () => {
       const explanation = explain("AssertionError: 13 != 14")
@@ -77,6 +92,14 @@ describe("can explain", () => {
       assert.equal(explanation.kind, "unsupportedType")
       assert.equal(explanation.operator, "/")
       assert.equal(explanation.leftType, "str")
+      assert.equal(explanation.rightType, "str")
+    })
+
+    it("can explain simple unsupported type errors", () => {
+      const explanation = explain("TypeError: unsupported operand type(s) for +=: 'int' and 'str'")
+      assert.equal(explanation.kind, "unsupportedType")
+      assert.equal(explanation.operator, "+=")
+      assert.equal(explanation.leftType, "int")
       assert.equal(explanation.rightType, "str")
     })
   })
@@ -145,5 +168,12 @@ describe("can translate", () => {
 
     assert.equal(translation.header, "Al realizar una comparación, se esperaba obtener el valor `8`, pero se obtuvo el valor `4`");
     assert.equal(translation.details, `Revisá tus cálculos y algoritmos y asegurate de que devuelvan los valores correctos`)
+  })
+
+  it("can translate simple boolean typo errors", () => {
+    const translation = explain("NameError: name 'false' is not defined").translate("es");
+
+    assert.equal(translation.header, "Se está referenciando al valor `false`, pero no existe. ¿Quisiste tal vez decir `False`?");
+    assert.equal(translation.details, `Recordá que los valores booleanos se escriben \`True\` y \`False\``)
   })
 })

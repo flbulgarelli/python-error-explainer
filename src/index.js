@@ -30,6 +30,10 @@ const Locales = {
     "assertionError": {
       "header": "Al realizar una comparación, se esperaba obtener el valor `{expected}`, pero se obtuvo el valor `{actual}`",
       "details": `Revisá tus cálculos y algoritmos y asegurate de que devuelvan los valores correctos`
+    },
+    "booleanTypo": {
+      "header": "Se está referenciando al valor `{wrongValue}`, pero no existe. ¿Quisiste tal vez decir \`{rightValue}\`?",
+      "details": `Recordá que los valores booleanos se escriben \`True\` y \`False\``,
     }
   }
 }
@@ -87,6 +91,26 @@ class NameErrorExplanation extends ErrorExplanation {
 
   get missingReference() {
     return this._parse(/NameError: name '(.*)' is not defined/)[0];
+  }
+}
+
+class BooleanTypoErrorExplanation extends ErrorExplanation {
+  constructor(message) {
+    super(message);
+
+    this.wrongValue = this._parse(/NameError: name '(false|true)' is not defined/)[0];
+  }
+
+  get kind() {
+    return "booleanTypo";
+  }
+
+  get replacements() {
+    return ['rightValue', 'wrongValue'];
+  }
+
+  get rightValue() {
+    return this.wrongValue[0].toUpperCase() + this.wrongValue.slice(1).toLowerCase();
   }
 }
 
@@ -155,7 +179,7 @@ class UnsupportedTypeErrorExplanation extends ErrorExplanation {
   constructor(message) {
     super(message);
 
-    [this.operator, this.leftType, this.rightType] = this._parse(/TypeError: unsupported operand type\(s\) for (.): '(.*)' and '(.*)'/);
+    [this.operator, this.leftType, this.rightType] = this._parse(/TypeError: unsupported operand type\(s\) for (.{1,2}): '(.*)' and '(.*)'/);
   }
 
   get replacements() {
@@ -169,7 +193,9 @@ class UnsupportedTypeErrorExplanation extends ErrorExplanation {
 
 
 function explain(message) {
-  if (message.indexOf("NameError:") === 0) {
+  if (message.match(/NameError: name '(false|true)'/)) {
+    return new BooleanTypoErrorExplanation(message);
+  } else if (message.indexOf("NameError:") === 0) {
     return new NameErrorExplanation(message);
   } else if (message.indexOf("AssertionError:") === 0) {
     return new AssertionErrorExplanation(message);
