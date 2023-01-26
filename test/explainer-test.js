@@ -127,53 +127,57 @@ describe("can translate", () => {
   it("can translate simple name errors", () => {
     const translation = explain("NameError: name 'foo' is not defined").translate("es");
 
-    assert.equal(translation.header, "Se está referenciando a `foo`, pero `foo` no existe");
-    assert.equal(translation.details, `Esto se puede deber a que \`foo\`:
-
-  * no fue definida (si es una función o procedimiento) o inicializada (si es una variable) (¿puede que te hayas olvidado de hacerlo?);
-  * fue definida o inicializada con un nombre diferente (¿puede que tengas un error de tipeo?);
-  * fue definida o inicializada correctamente, pero cometiste un error de tipeo al referenciarla.`)
+    assert.equal(translation.header, "Se está referenciando a <code>foo</code>, pero <code>foo</code> no existe");
+    assert.equal(translation.details, `Esto se puede deber a que <code>foo</code>:
+<ul>
+  <li>no fue definida (si es una función o procedimiento) o inicializada (si es una variable) (¿puede que te hayas olvidado de hacerlo?);</li>
+  <li>fue definida o inicializada con un nombre diferente (¿puede que tengas un error de tipeo?);</li>
+  <li>fue definida o inicializada correctamente, pero cometiste un error de tipeo al referenciarla.</li>
+</ul>`)
   })
 
   it("can translate simple arguments errors", () => {
     const translation = explain("TypeError: bar() takes 4 positional arguments but 2 were given").translate("es");
 
-    assert.equal(translation.header, "Se está intentando invocar a `bar` con `2` argumento(s), pero fue definida con `4` parámetro(s)");
+    assert.equal(translation.header, "Se está intentando invocar a <code>bar</code> con <code>2</code> argumento(s), pero fue definida con <code>4</code> parámetro(s)");
     assert.equal(translation.details, `Para que se pueda invocar adecuadamente una función o procedimiento, la cantidad de parámetros con la que se define debe coincidir con la cantidad de argumentos con la que la invoca. Por eso, revisá que:
-
-  * \`bar\` realmente tenga que tener \`4\` parámetros (¿quizás deberías definirla con \`2\` parámetros?);
-  * todas las veces que uses \`bar\` sea invocada con la cantidad de argumentos correctos (¿quizás deberías invocarla con \`4\` parámetros?);`)
+<ul>
+  <li><code>bar</code> realmente tenga que tener <code>4</code> parámetros (¿quizás deberías definirla con <code>2</code> parámetros?);</li>
+  <li>todas las veces que uses <code>bar</code> sea invocada con la cantidad de argumentos correctos (¿quizás deberías invocarla con <code>4</code> parámetros?);</li>
+</ul>`)
   })
 
   it("can translate simple type operation errors", () => {
     const translation = explain("TypeError: unsupported operand type(s) for +: 'int' and 'str'").translate("es");
 
-    assert.equal(translation.header, "Se está intentando ejecutar la operación `+` entre un `int` y un `str`, pero esto no es posible");
+    assert.equal(translation.header, "Se está intentando ejecutar la operación <code>+</code> entre un <code>int</code> y un <code>str</code>, pero esto no es posible");
     assert.equal(translation.details, `Revisá que:
-  * la operación que estás intentando ejecutar \`+\` sea correcta;
-  * que los valores que estés operando sean del tipo correcto;
-  * que estés operando los valores correctos (por ejemplo, que no estés confundiendo una variable por otra);
-  * que no sean necesarias conversiones de tipos.`)
+<ul>
+  <li>la operación que estás intentando ejecutar <code>+</code> sea correcta;</li>
+  <li>que los valores que estés operando sean del tipo correcto;</li>
+  <li>que estés operando los valores correctos (por ejemplo, que no estés confundiendo una variable por otra);</li>
+  <li>que no sean necesarias conversiones de tipos.</li>
+</ul>`)
   })
 
   it("can translate simple type conversion errors", () => {
     const translation = explain("ValueError: invalid literal for int() with base 10: 'hello'").translate("es");
 
-    assert.equal(translation.header, "Se está intentando convertir el string `hello` en entero, pero esto no es posible");
+    assert.equal(translation.header, "Se está intentando convertir el string <code>hello</code> en entero, pero esto no es posible");
     assert.equal(translation.details, `Revisá que estés tratando de convertir el valor correcto`)
   })
 
   it("can translate simple assertion errors", () => {
     const translation = explain("AssertionError: 4 != 8").translate("es");
 
-    assert.equal(translation.header, "Al realizar una comparación, se esperaba obtener el valor `8`, pero se obtuvo el valor `4`");
+    assert.equal(translation.header, "Al realizar una comparación, se esperaba obtener el valor <code>8</code>, pero se obtuvo el valor <code>4</code>");
     assert.equal(translation.details, `Revisá tus cálculos y algoritmos y asegurate de que devuelvan los valores correctos`)
   })
 
   it("can translate simple boolean typo errors", () => {
     const translation = explain("NameError: name 'false' is not defined").translate("es");
 
-    assert.equal(translation.header, "Se está referenciando al valor `false`, pero no existe. ¿Quisiste tal vez decir `False`?");
-    assert.equal(translation.details, `Recordá que los valores booleanos se escriben \`True\` y \`False\``)
+    assert.equal(translation.header, "Se está referenciando al valor <code>false</code>, pero no existe. ¿Quisiste tal vez decir <code>False</code>?");
+    assert.equal(translation.details, `Recordá que los valores booleanos se escriben <code>True</code> y <code>False</code>`)
   })
 })

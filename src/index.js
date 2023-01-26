@@ -1,39 +1,43 @@
 const Locales = {
   "es": {
     "name": {
-      "header": "Se está referenciando a `{missingReference}`, pero `{missingReference}` no existe",
-      "details": `Esto se puede deber a que \`{missingReference}\`:
-
-  * no fue definida (si es una función o procedimiento) o inicializada (si es una variable) (¿puede que te hayas olvidado de hacerlo?);
-  * fue definida o inicializada con un nombre diferente (¿puede que tengas un error de tipeo?);
-  * fue definida o inicializada correctamente, pero cometiste un error de tipeo al referenciarla.`
+      "header": "Se está referenciando a <code>{missingReference}</code>, pero <code>{missingReference}</code> no existe",
+      "details": `Esto se puede deber a que <code>{missingReference}</code>:
+<ul>
+  <li>no fue definida (si es una función o procedimiento) o inicializada (si es una variable) (¿puede que te hayas olvidado de hacerlo?);</li>
+  <li>fue definida o inicializada con un nombre diferente (¿puede que tengas un error de tipeo?);</li>
+  <li>fue definida o inicializada correctamente, pero cometiste un error de tipeo al referenciarla.</li>
+</ul>`
     },
     "unsupportedType": {
-      "header": "Se está intentando ejecutar la operación `{operator}` entre un `{leftType}` y un `{rightType}`, pero esto no es posible",
+      "header": "Se está intentando ejecutar la operación <code>{operator}</code> entre un <code>{leftType}</code> y un <code>{rightType}</code>, pero esto no es posible",
       "details": `Revisá que:
-  * la operación que estás intentando ejecutar \`{operator}\` sea correcta;
-  * que los valores que estés operando sean del tipo correcto;
-  * que estés operando los valores correctos (por ejemplo, que no estés confundiendo una variable por otra);
-  * que no sean necesarias conversiones de tipos.`
+<ul>
+  <li>la operación que estás intentando ejecutar <code>{operator}</code> sea correcta;</li>
+  <li>que los valores que estés operando sean del tipo correcto;</li>
+  <li>que estés operando los valores correctos (por ejemplo, que no estés confundiendo una variable por otra);</li>
+  <li>que no sean necesarias conversiones de tipos.</li>
+</ul>`
     },
     "arguments": {
-      "header": "Se está intentando invocar a `{reference}` con `{expectedArgumentsCount}` argumento(s), pero fue definida con `{actualParametersCount}` parámetro(s)",
+      "header": "Se está intentando invocar a <code>{reference}</code> con <code>{expectedArgumentsCount}</code> argumento(s), pero fue definida con <code>{actualParametersCount}</code> parámetro(s)",
       "details": `Para que se pueda invocar adecuadamente una función o procedimiento, la cantidad de parámetros con la que se define debe coincidir con la cantidad de argumentos con la que la invoca. Por eso, revisá que:
-
-  * \`{reference}\` realmente tenga que tener \`{actualParametersCount}\` parámetros (¿quizás deberías definirla con \`{expectedArgumentsCount}\` parámetros?);
-  * todas las veces que uses \`{reference}\` sea invocada con la cantidad de argumentos correctos (¿quizás deberías invocarla con \`{actualParametersCount}\` parámetros?);`
+<ul>
+  <li><code>{reference}</code> realmente tenga que tener <code>{actualParametersCount}</code> parámetros (¿quizás deberías definirla con <code>{expectedArgumentsCount}</code> parámetros?);</li>
+  <li>todas las veces que uses <code>{reference}</code> sea invocada con la cantidad de argumentos correctos (¿quizás deberías invocarla con <code>{actualParametersCount}</code> parámetros?);</li>
+</ul>`
     },
     "intConversion": {
-      "header": "Se está intentando convertir el string `{value}` en entero, pero esto no es posible",
+      "header": "Se está intentando convertir el string <code>{value}</code> en entero, pero esto no es posible",
       "details": `Revisá que estés tratando de convertir el valor correcto`
     },
     "assertionError": {
-      "header": "Al realizar una comparación, se esperaba obtener el valor `{expected}`, pero se obtuvo el valor `{actual}`",
+      "header": "Al realizar una comparación, se esperaba obtener el valor <code>{expected}</code>, pero se obtuvo el valor <code>{actual}</code>",
       "details": `Revisá tus cálculos y algoritmos y asegurate de que devuelvan los valores correctos`
     },
     "booleanTypo": {
-      "header": "Se está referenciando al valor `{wrongValue}`, pero no existe. ¿Quisiste tal vez decir \`{rightValue}\`?",
-      "details": `Recordá que los valores booleanos se escriben \`True\` y \`False\``,
+      "header": "Se está referenciando al valor <code>{wrongValue}</code>, pero no existe. ¿Quisiste tal vez decir <code>{rightValue}</code>?",
+      "details": `Recordá que los valores booleanos se escriben <code>True</code> y <code>False</code>`,
     }
   }
 }
