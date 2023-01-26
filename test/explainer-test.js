@@ -78,6 +78,27 @@ describe("can explain", () => {
     })
   })
 
+  describe("missingElementToRemove", () => {
+    it("can explain missing element", () => {
+      const explanation = explain("ValueError: list.remove(x): x not in list")
+      assert.equal(explanation.kind, "missingElementToRemove")
+    })
+  })
+
+  describe("indexOutOfRange", () => {
+    it("can explain index out of range", () => {
+      const explanation = explain("IndexError: list index out of range")
+      assert.equal(explanation.kind, "indexOutOfRange")
+    })
+
+    describe("indexOutOfRange", () => {
+      it("can explain index out of range with extra newlines", () => {
+        const explanation = explain("\nIndexError: list index out of range\n")
+        assert.equal(explanation.kind, "indexOutOfRange")
+      })
+    })
+  })
+
   describe("unsupportedType", () => {
     it("can explain simple unsupported type errors", () => {
       const explanation = explain("TypeError: unsupported operand type(s) for +: 'int' and 'str'")
@@ -179,5 +200,40 @@ describe("can translate", () => {
 
     assert.equal(translation.header, "Se está referenciando al valor <code>false</code>, pero no existe. ¿Quisiste tal vez decir <code>False</code>?");
     assert.equal(translation.details, `Recordá que los valores booleanos se escriben <code>True</code> y <code>False</code>`)
+  })
+
+  it("can translate missing element to remove error", () => {
+    const translation = explain("ValueError: list.remove(x): x not in list").translate("es");
+
+    assert.equal(translation.header, "Intentaste remover un elemento de una lista, pero la lista no lo contenía");
+    assert.equal(translation.details, `Recordá que para poder remover un elemento mediante <code>list.remove</code>, el elemento tiene que estar en la lista antes. Fijate si:
+<ul>
+  <li>estás eliminando el elemento correcto y no otro por error;</li>
+  <li>el elemento no fue eliminado anteriormente;</li>
+  <li>la lista contiene efectivamente que deseás eliminar.</li>
+</ul>`)
+  })
+
+  it("can translate index out of range errors", () => {
+    const translation = explain("IndexError: list index out of range").translate("es");
+
+    assert.equal(translation.header, "Intentaste acceder a una posición más allá de los límites de la lista ");
+    assert.equal(translation.details, `Recordá que sólo podés acceder a posiciones de una lista que estén dentro de su tamaño. Tené en cuenta que:
+<ul>
+  <li>si estás usando un índice positivo, éste debe estar entre 0 (primer elemento) y len(lista) -1, es decir, el tamaño de la lista menos uno  (último elemento);</li>
+  <li>si estás usando un índice negativo, éste debe estar entre -1 (último elemento) y -len(lista), es decir, el opuesto del tamaño de la lista (primer elemento).</li>
+</ul>
+
+Por ejemplo, las siguientes expresiones fallan todas con <code>IndexError</code>:
+
+<code><pre>
+[][2] # lista vacía; cualquier indice fallará
+
+["hola", "mundo"][2] # intento de acceder al tercer elemento de una lista de dos elementos
+["hola", "mundo"][3] # intento de acceder al cuarto elemento de una lista de dos elementos
+
+["chau"][-2] # intento de acceder al anteúltimo elemento de una lista de un elemento
+["chau"][-2] # intento de acceder al antepenúltimo elemento de una lista de un elemento
+</pre></code>`)
   })
 })

@@ -38,6 +38,35 @@ const Locales = {
     "booleanTypo": {
       "header": "Se está referenciando al valor <code>{wrongValue}</code>, pero no existe. ¿Quisiste tal vez decir <code>{rightValue}</code>?",
       "details": `Recordá que los valores booleanos se escriben <code>True</code> y <code>False</code>`,
+    },
+    "missingElementToRemove": {
+      "header": "Intentaste remover un elemento de una lista, pero la lista no lo contenía",
+      "details": `Recordá que para poder remover un elemento mediante <code>list.remove</code>, el elemento tiene que estar en la lista antes. Fijate si:
+<ul>
+  <li>estás eliminando el elemento correcto y no otro por error;</li>
+  <li>el elemento no fue eliminado anteriormente;</li>
+  <li>la lista contiene efectivamente que deseás eliminar.</li>
+</ul>`
+    },
+    "indexOutOfRange": {
+      "header": "Intentaste acceder a una posición más allá de los límites de la lista ",
+      "details": `Recordá que sólo podés acceder a posiciones de una lista que estén dentro de su tamaño. Tené en cuenta que:
+<ul>
+  <li>si estás usando un índice positivo, éste debe estar entre 0 (primer elemento) y len(lista) -1, es decir, el tamaño de la lista menos uno  (último elemento);</li>
+  <li>si estás usando un índice negativo, éste debe estar entre -1 (último elemento) y -len(lista), es decir, el opuesto del tamaño de la lista (primer elemento).</li>
+</ul>
+
+Por ejemplo, las siguientes expresiones fallan todas con <code>IndexError</code>:
+
+<code><pre>
+[][2] # lista vacía; cualquier indice fallará
+
+["hola", "mundo"][2] # intento de acceder al tercer elemento de una lista de dos elementos
+["hola", "mundo"][3] # intento de acceder al cuarto elemento de una lista de dos elementos
+
+["chau"][-2] # intento de acceder al anteúltimo elemento de una lista de un elemento
+["chau"][-2] # intento de acceder al antepenúltimo elemento de una lista de un elemento
+</pre></code>`
     }
   }
 }
@@ -50,6 +79,11 @@ class ErrorExplanation {
   constructor(message) {
     this._message = message;
   }
+
+  get replacements() {
+    return [];
+  }
+
 
   translate(localeCode) {
     const locale = Locales[localeCode];
@@ -195,20 +229,49 @@ class UnsupportedTypeErrorExplanation extends ErrorExplanation {
   }
 }
 
+class MissingElementToRemoveErrorExplanation extends ErrorExplanation {
+  constructor(message) {
+    super(message)
+  }
 
+  get kind() {
+    return 'missingElementToRemove'
+  }
+}
+
+class IndexOutOfRangeErrorExplanation extends ErrorExplanation {
+  constructor(message) {
+    super(message)
+  }
+
+  get kind() {
+    return 'indexOutOfRange'
+  }
+}
+
+/**
+ *
+ * @param {string} message
+ * @returns {ErrorExplanation}
+ */
 function explain(message) {
-  if (message.match(/NameError: name '(false|true)'/)) {
-    return new BooleanTypoErrorExplanation(message);
-  } else if (message.indexOf("NameError:") === 0) {
-    return new NameErrorExplanation(message);
-  } else if (message.indexOf("AssertionError:") === 0) {
-    return new AssertionErrorExplanation(message);
-  } else if (message.indexOf("ValueError: invalid literal") === 0) {
-    return new IntConversionErrorExplanation(message);
-  } else if (message.indexOf("TypeError: unsupported operand type") === 0) {
-    return new UnsupportedTypeErrorExplanation(message);
-  } else if (message.indexOf("TypeError: ") === 0)  {
-    return new ArgumentsErrorExplanation(message);
+  const m = message.trim();
+  if (m === 'ValueError: list.remove(x): x not in list') {
+    return new MissingElementToRemoveErrorExplanation(m)
+  } else if (m === 'IndexError: list index out of range') {
+    return new IndexOutOfRangeErrorExplanation(m);
+  } else if (m.match(/NameError: name '(false|true)'/)) {
+    return new BooleanTypoErrorExplanation(m);
+  } else if (m.indexOf("NameError:") === 0) {
+    return new NameErrorExplanation(m);
+  } else if (m.indexOf("AssertionError:") === 0) {
+    return new AssertionErrorExplanation(m);
+  } else if (m.indexOf("ValueError: invalid literal") === 0) {
+    return new IntConversionErrorExplanation(m);
+  } else if (m.indexOf("TypeError: unsupported operand type") === 0) {
+    return new UnsupportedTypeErrorExplanation(m);
+  } else if (m.indexOf("TypeError: ") === 0)  {
+    return new ArgumentsErrorExplanation(m);
   } else {
     return null;
   }
